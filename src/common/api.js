@@ -1,13 +1,79 @@
 import axios from 'axios';
-import common from './common';
 import qs from 'qs';
 import _this from '../main';
+import common from './common';
 import {
+  host,
   apiUrl
 } from './serviceUrl';
 
 let methodToken = [
-  'user.sms'
+  'user.info',
+  'user.editinfo',
+  'user.changeavatar',
+  'user.logout',
+  'user.addgoodsbrowsing',
+  'user.delgoodsbrowsing',
+  'user.goodsbrowsing',
+  'user.goodscollection',
+  'user.goodscollectionlist',
+  'user.saveusership',
+  'user.vuesaveusership',
+  'user.getshipdetail',
+  'user.setdefship',
+  'user.editship',
+  'user.removeship',
+  'user.getusership',
+  'user.pay',
+  'user.orderevaluate',
+  'user.getuserdefaultship',
+  'user.issign',
+  'user.sign',
+  'user.mypoint',
+  'user.pointlog',
+  'user.getbankcardlist',
+  'user.getdefaultbankcard',
+  'user.addbankcard',
+  'user.removebankcard',
+  'user.setdefaultbankcard',
+  'user.getbankcardinfo',
+  'user.editpwd',
+  'user.forgotpwd',
+  'user.recommend',
+  'user.balancelist',
+  'user.sharecode',
+  'user.cash',
+  'user.cashlist',
+  'coupon.getcoupon',
+  'coupon.usercoupon',
+  'cart.add',
+  'cart.del',
+  'cart.getlist',
+  'cart.setnums',
+  'cart.getnumber',
+  'order.cancel',
+  'order.del',
+  'order.details',
+  'order.confirm',
+  'order.getlist',
+  'order.create',
+  'order.getship',
+  'order.getorderlist',
+  'order.getorderstatusnum',
+  'order.aftersaleslist',
+  'order.aftersalesinfo',
+  'order.aftersalesstatus',
+  'order.addaftersales',
+  'order.sendreship',
+  'order.iscomment',
+  'payments.getinfo',
+  'user.getuserpoint',
+  'coupon.getcouponkey',
+  'store.isclerk',
+  'store.storeladinglist',
+  'store.ladinginfo',
+  'store.lading',
+  'store.ladingdel'
 ];
 
 // token验证
@@ -88,4 +154,9 @@ const sendPost = (url, data, config = {}, callback) => {
   });
 };
 
+// 获取店铺配置
+export const shopConfig = () => axios.get(host + '/api/common/jshopconf').then(response => response.data);
+// 发送短信验证码
 export const sms = (data, callback) => post('user.sms', data, callback);
+// 用户登录
+export const login = (data, callback) => post('user.login', data, callback);

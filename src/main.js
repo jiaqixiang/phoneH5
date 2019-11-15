@@ -13,7 +13,7 @@ Vue.use(YDUI);
 
 Vue.config.productionTip = false;
 Vue.prototype.GLOBAL = Common;
-// Vue.prototype.$api = Api;
+Vue.prototype.$api = Api;
 
 /* eslint-disable no-new */
 new Vue({
@@ -21,4 +21,6 @@ new Vue({
   router,
   components: { App },
   template: '<App/>'
-})
+});
+
+export default this;

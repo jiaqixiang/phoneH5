@@ -14,6 +14,11 @@
               <span slot="left">登陆密码：</span>
               <yd-input slot="right" type="password" v-model="password" placeholder="请输入密码"></yd-input>
           </yd-cell-item>
+          <yd-cell-item v-if="isShowCaptcha">
+              <span slot="left">验证码：</span>
+              <yd-input slot="right" type="text" v-model="captcha" placeholder="请输入验证码"></yd-input>
+              <img slot="right" :src="localCaptcha" alt="" @click="reloadCaptcha" width="150">
+          </yd-cell-item>
         </yd-cell-group>
       </yd-tab-panel>
       <yd-tab-panel label="手机号登陆">
@@ -47,7 +52,10 @@ export default {
     return {
       phone: '',
       password: '',
-      start1: false
+      start1: false,  // 短信倒计时
+      captcha: '', // 验证码
+      localCaptcha: '', //验证码图片
+      isShowCaptcha: false // 是否需要验证码
     }
   },
   created () {
@@ -78,27 +86,61 @@ export default {
   },
   methods: {
     sendCode1() {
+      var _this = this;
       if (!this.rightMobile.status) {
         this.$dialog.toast({ mes: this.rightMobile.msg, timeout: 1000 });
         return;
       }
       this.$dialog.loading.open('发送中...');
+      // setTimeout(() => {
+      //   _this.$dialog.loading.close();
+      //   _this.$api.sms({mobile: this.phone, code: 'login'}, (res) => {
+      //   if (res.status) {
+      //     _this.start1 = true;
+      //     _this.$dialog.toast({
+      //       mes: res.msg,
+      //       icon: 'success',
+      //       timeout: 1000
+      //     })
+      //   }
+      // })
+      // }, 1000);
       setTimeout(() => {
-        this.start1 = true;
-        this.$dialog.loading.close();
-        this.$dialog.toast({
-            mes: '已发送',
-            icon: 'success',
-            timeout: 800
-        });
-      }, 500);
+        _this.$dialog.loading.close();
+        _this.start1 = true;
+        _this.$dialog.toast({
+          mes: '发送成功',
+          icon: 'success',
+          timeout: 1000
+        })
+      }, 1000);
     },
     loginFn: function() {
+      var _this = this;
       if (!this.rightMobile.status) {
-        this.$dialog.toast({ msg: this.rightMobile.msg, timeout: 1000});
+        _this.$dialog.toast({ mes: this.rightMobile.msg, timeout: 1000});
       } else {
+        if (!this.password) {
+          _this.$dialog.toast({ mes: '请输入密码！', timeout: 1000});
+        } else {
+          let data = {
+            mobile: this.mobile,
+            password: this.password
+          };
+          if (this.isShowCaptcha) {
+            data.captcha = this.captcha;
+          }
+          this.$api.login(data, res => {
+            if (res.status) {
+              this.GLOBAL.setStorage('user_token', res.data);
+            }
+          })
+        }
       }
-    }
+    },
+    reloadCaptcha: function () {
+
+    },
   }
 }
 </script>
