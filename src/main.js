@@ -16,11 +16,12 @@ Vue.prototype.GLOBAL = Common;
 Vue.prototype.$api = Api;
 
 /* eslint-disable no-new */
-new Vue({
+const _this = new Vue({
   el: '#app',
   router,
   components: { App },
   template: '<App/>'
 });
 
-export default this;
+// eslint-disable-next-line no-undef
+export default _this;

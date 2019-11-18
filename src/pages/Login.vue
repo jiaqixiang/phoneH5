@@ -3,7 +3,7 @@
     <div class="login-img">
         <img src="../../static/image/group14.png" alt="aaa">
     </div>
-    <yd-tab>
+    <yd-tab v-model="tab" :item-click="itemClick">
       <yd-tab-panel label="账号登陆">
         <yd-cell-group>
           <yd-cell-item>
@@ -35,7 +35,7 @@
           </yd-cell-item>
           <yd-cell-item>
               <span slot="left">验证码：</span>
-              <yd-input slot="right" type="number" v-model="password" placeholder="请输入密码"></yd-input>
+              <yd-input slot="right" type="number" v-model="code" placeholder="请输入密码"></yd-input>
           </yd-cell-item>
         </yd-cell-group>
       </yd-tab-panel>
@@ -50,8 +50,11 @@ export default {
   name: 'Login',
   data () {
     return {
+      tab: Number(this.GLOBAL.getStorage('loginType')) || 0,
+      invitecode: this.GLOBAL.getStorage('invitecode') || '', // 邀请码
       phone: '',
       password: '',
+      code: '',
       start1: false,  // 短信倒计时
       captcha: '', // 验证码
       localCaptcha: '', //验证码图片
@@ -85,6 +88,10 @@ export default {
     }
   },
   methods: {
+    itemClick: function (key) {
+      this.tab = key;
+      this.GLOBAL.setStorage('loginType', key);
+    },
     sendCode1() {
       var _this = this;
       if (!this.rightMobile.status) {
@@ -120,27 +127,60 @@ export default {
       if (!this.rightMobile.status) {
         _this.$dialog.toast({ mes: this.rightMobile.msg, timeout: 1000});
       } else {
-        if (!this.password) {
-          _this.$dialog.toast({ mes: '请输入密码！', timeout: 1000});
-        } else {
-          let data = {
-            mobile: this.mobile,
-            password: this.password
-          };
-          if (this.isShowCaptcha) {
-            data.captcha = this.captcha;
-          }
-          this.$api.login(data, res => {
-            if (res.status) {
-              this.GLOBAL.setStorage('user_token', res.data);
+        if (!this.tab) {
+          // 账号密码登陆
+          if (!this.password) {
+            _this.$dialog.toast({ mes: '请输入密码！', timeout: 1000});
+          } else {
+            let data = {
+              mobile: this.phone,
+              password: this.password
+            };
+            if (this.isShowCaptcha) {
+              data.captcha = this.captcha;
             }
-          })
+            this.$api.login(data, res => {
+              if (res.status) {
+                this.GLOBAL.setStorage('user_token', res.data);
+                this.redirectHandler();
+              } else {
+                // 需输入验证码或验证码错误刷新
+                if (res.data === 10013 || res.data === 10012) {
+                  this.isShowCaptcha = true;
+                  this.localCaptcha = this.GLOBAL.getCapcha();
+                }
+              }
+            })
+          }
+        } else {
+          // 短信验证登陆
+          if (!this.code) {
+            _this.$dialog.toast({ mes: '请输入短信验证码！', timeout: 1000});
+          } else {
+            let data = {
+              mobile: this.mobile,
+              code: this.code,
+              invitecode: this.invitecode
+            };
+            this.$api.smsLogin(data, res => {
+              if (res.status) {
+                this.GLOBAL.setStorage('user_token', res.data);
+                this.redirectHandler();
+              }
+            })
+          }
         }
       }
     },
     reloadCaptcha: function () {
 
     },
+    // 重定向跳转，或返回上一个页面
+    redirectHandler: function () {
+      this.$router.replace(
+        this.$route.query.redirect ? decodeURIComponent(this.$route.query.redirect) : '/'
+      )
+    }
   }
 }
 </script>

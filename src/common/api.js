@@ -160,3 +160,5 @@ export const shopConfig = () => axios.get(host + '/api/common/jshopconf').then(r
 export const sms = (data, callback) => post('user.sms', data, callback);
 // 用户登录
 export const login = (data, callback) => post('user.login', data, callback);
+// 短信验证码登录
+export const smsLogin = (data, callback) => post('user.smslogin', data, callback);
