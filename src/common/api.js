@@ -162,3 +162,5 @@ export const sms = (data, callback) => post('user.sms', data, callback);
 export const login = (data, callback) => post('user.login', data, callback);
 // 短信验证码登录
 export const smsLogin = (data, callback) => post('user.smslogin', data, callback);
+// 获取首页轮播
+export const slider = (data, callback) => post('advert.getAdvertList', data, callback);

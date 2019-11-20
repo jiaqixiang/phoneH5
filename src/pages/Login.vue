@@ -30,7 +30,7 @@
                 v-model="start1" 
                 init-str="获取验证码"
                 @click.native="sendCode1" 
-                type="warning"
+                type="primary"
               ></yd-sendcode>
           </yd-cell-item>
           <yd-cell-item>
@@ -41,7 +41,7 @@
       </yd-tab-panel>
     </yd-tab>
     <yd-button size="large" type="danger" @click.native="loginFn" style="width:90%;margin-left:5%;margin-top:.1rem">登陆</yd-button>
-    <p style="text-align:center;margin-top:.3rem">没有账号？<a href="#" style="color:blue;">立即注册</a></p>
+    <p style="text-align:center;margin-top:.3rem">没有账号？<a href="#" @click="toRegister" style="color:blue;">立即注册</a></p>
   </div>
 </template>
 
@@ -173,13 +173,23 @@ export default {
       }
     },
     reloadCaptcha: function () {
-
+      this.localCaptcha = this.GLOBAL.getCapcha();
     },
     // 重定向跳转，或返回上一个页面
     redirectHandler: function () {
       this.$router.replace(
         this.$route.query.redirect ? decodeURIComponent(this.$route.query.redirect) : '/'
       )
+    },
+    toRegister: function () {
+      if (this.$route.query.replace) {
+        this.$router.replace({
+          path: '/register',
+          query: {redirect: decodeURIComponent(this.$route.query.replace)}
+        })
+      } else {
+        this.$router.replace({path: '/register'});
+      }
     }
   }
 }

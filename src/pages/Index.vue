@@ -1,16 +1,20 @@
 <template>
   <div class="index">
-    首页
+    <indexslider></indexslider> <!--轮播-->
   </div>
 </template>
 
 <script>
+import indexslider from '../components/Indexslider';
 export default {
   name: 'Index',
   data () {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
+  },
+  components: {
+    indexslider
   }
 }
 </script>

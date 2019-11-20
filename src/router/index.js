@@ -1,13 +1,13 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/login'
+      redirect: '/index'
     },
     {
       path: '/index',
@@ -63,6 +63,17 @@ export default new Router({
         keepAlive: true,
         title: '用户登陆'
       }
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: resolve => require(['../pages/Register.vue'], resolve),
+      meta: {
+        navShow: true,
+        tabShow: false,
+        keepAlive: true,
+        title: '注册'
+      }
     }
   ]
-})
+});
